@@ -16,13 +16,16 @@ resource "aws_instance" "web" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.web.id]
 
-  user_data = <<-EOF
-    #!/bin/bash
-    dnf install -y httpd
-    systemctl start httpd
-    systemctl enable httpd
-    echo "<h1>Terraform Demo - Sang Nguyen</h1>" > /var/www/html/index.html
-  EOF
+  user_data = <<-USERDATA
+#!/bin/bash
+set -ex
+dnf install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Terraform Demo - Sang Nguyen</h1>" > /var/www/html/index.html
+USERDATA
+
+  user_data_replace_on_change = true
 
   tags = {
     Name        = "terraform-demo-ec2"
