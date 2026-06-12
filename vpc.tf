@@ -1,12 +1,12 @@
 # VPC
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   tags = {
-    Name        = "terraform-demo-vpc"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-vpc"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }
@@ -16,8 +16,8 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name        = "terraform-demo-igw"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-igw"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }
@@ -25,13 +25,13 @@ resource "aws_internet_gateway" "main" {
 # Public Subnet
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  cidr_block              = var.public_subnet_cidr
+  availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "terraform-demo-public-subnet"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-public-subnet"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }
@@ -39,12 +39,12 @@ resource "aws_subnet" "public" {
 # Private Subnet
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-east-1b"
+  cidr_block        = var.private_subnet_cidr
+  availability_zone = "${var.aws_region}b"
 
   tags = {
-    Name        = "terraform-demo-private-subnet"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-private-subnet"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }
@@ -59,8 +59,8 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name        = "terraform-demo-public-rt"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-public-rt"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }

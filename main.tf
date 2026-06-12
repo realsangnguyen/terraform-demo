@@ -3,11 +3,11 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_s3_bucket" "demo" {
-  bucket = "terraform-demo-sang-${random_id.suffix.hex}"
+  bucket = "${var.project_name}-sang-${random_id.suffix.hex}"
 
   tags = {
-    Name        = "terraform-demo"
-    Environment = "sandbox"
+    Name        = "${var.project_name}"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }

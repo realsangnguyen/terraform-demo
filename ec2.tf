@@ -1,4 +1,3 @@
-# Get latest Amazon Linux 2023 AMI
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -9,10 +8,9 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-# EC2 Instance
 resource "aws_instance" "web" {
   ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = "t2.micro"
+  instance_type          = var.instance_type
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.web.id]
 
@@ -28,8 +26,8 @@ USERDATA
   user_data_replace_on_change = true
 
   tags = {
-    Name        = "terraform-demo-ec2"
-    Environment = "sandbox"
+    Name        = "${var.project_name}-ec2"
+    Environment = var.environment
     ManagedBy   = "terraform"
   }
 }
